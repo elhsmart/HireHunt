@@ -83,5 +83,8 @@ $(document).ready(function(){
 
     $(document).mousedown( DragHandler.mouseDown )
 
-    console.log("added");
+    document.buttons = {
+        addApp: Dialog.init($("#add-app"), $(".joblist-appliedto .icon-plus-sign"))
+    }
+
 })

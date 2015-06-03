@@ -7,9 +7,28 @@
 
     "128": "assets/logo-128.png"
   },
+
   "app": {
     "background": {
       "scripts": ["js/upstart.js"]
     }
+  },
+
+  "permissions": [
+      "<all_urls>",
+      "webview",
+      "system.display",
+      "http://*/*",
+      "https://*/*",
+      "contextMenus",
+      "unlimitedStorage",
+      "storage",
+      "fileSystem",
+      "fileSystem.write",
+      "fileSystem.directory"
+    ],
+
+  "sandbox": {
+    "pages": ["index.html"]
   }
 }

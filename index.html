@@ -4,9 +4,19 @@
     <meta charset="utf-8">
     <title>HireHunt</title>
     <link href="styles/main.css" rel="stylesheet">
+    <link href="styles/bootstrap.css" rel="stylesheet">
     <link href="styles/bootstrap.icon-large.css" rel="stylesheet">
+    <link href="styles/bootstrap-datepicker.css" rel="stylesheet">
+    <link href="styles/fileinput.css" rel="stylesheet">
 
     <script src="js/libs/jquery.min.js"></script>
+    <script src="js/libs/bootstrap.js"></script>
+    <script src="js/libs/bootstrap-datepicker.js"></script>
+    <script src="js/libs/fileinput.min.js"></script>
+    <script src="js/libs/ashe.js"></script>
+    <script src="js/libs/ashe.modifiers.js"></script>
+    <script src="js/libs/date.format.js"></script>
+
     <script src="js/dialog.js"></script>
     <script src="js/main.js"></script>
 </head>
@@ -42,6 +52,7 @@
             padding: 14px;
             padding-left: 20px;
             text-align: left;
+            font-size: 18px;
         }
 
         .column.column-last {
@@ -91,11 +102,10 @@
 
         .job .company-metadata {
             margin-top:5px;
-            font-size: 12px;
+            font-size: 12px !important;
         }
 
         .job .company-metadata div {
-            margin-top: 2px;
             overflow: hidden;
             position: static;
             color: #777;
@@ -123,8 +133,8 @@
 
         .credits {
             position: absolute;
-            width: 50px;
-            height: 16px;
+            width: 60px;
+            height: 26px;
             padding: 8px;
             left: 100%;
             z-index: 100;
@@ -145,19 +155,99 @@
             bottom: 0;
             left: 0;
             z-index: 1050;
-            display: block;
+            display: none;
             overflow: hidden;
             outline: 0;
             transition: opacity .15s linear;
-            opacity: 0.5;
-            background: #222;
+            background: rgba(15, 15, 15, 0.7);
+            text-align: center;
+
         }
 
         .blackout .dialog-tpl {
+            display: inline-block;;
             position: relative;
             box-sizing: border-box;
+            background: #fff;
+            width: 50%;
+            height: 50%;
+            margin-top: 15%;
+            min-height: 320px;
+            max-height: 400px;
+            min-width: 580px;
         }
 
+        .add-app-entry {
+
+        }
+
+        .add-app-entry p {
+            padding: 20px;
+            color: #555;
+            font-weight: 200;
+            font-size: 24px;
+        }
+
+        .add-app-entry input {
+            margin: 0em;
+            text-rendering: auto;
+            color: initial;
+            letter-spacing: normal;
+            word-spacing: normal;
+            text-transform: none;
+            text-indent: 0px;
+            text-shadow: none;
+            display: inline-block;
+            padding-left:10px;
+            text-align: start;
+            height: 34px;
+            font-size: 18px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            margin-top:12px;
+            width:92%;
+        }
+
+        .company-logo-upload {
+            float:left;
+            margin-top:-2px !important;
+        }
+
+        .company-logo-fromurl {
+            margin-left: 1%;
+            margin-top: -4px;
+        }
+
+        .btn.btn-file {
+            margin-top: -4px;
+            margin-left: 1%;
+        }
+
+        .uploaded-image {
+            border: 1px solid #ccc;
+            width: 64px;
+            height: 64px;
+            float: left;
+            margin-top: 20px;
+            margin-left: 24px;
+            margin-right: -74px;
+        }
+
+        .btn-create-app {
+            float:right;
+            margin-top:20px;
+            margin-right:4%;
+        }
+
+        .date-input {
+            width: 40% !important;
+            float: left ;
+            margin-left: 4% !important;
+            margin-top: 20px !important;
+        }
     </style>
     <div class="credits">
         credits
@@ -181,72 +271,6 @@
                             <div class="company-applied-date">2 June 2015</div>
                         </div>
                     </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
-                    <div class="job">
-                        <div class="company-icon">
-
-                        </div>
-                        Nya, new job!
-                    </div>
                 </div>
             </div>
         </div>
@@ -256,7 +280,6 @@
                     Testing
                 </div>
                 <div class="joblist-inner">
-
                 </div>
             </div>
         </div>
@@ -291,5 +314,52 @@
 
         </div>
     </div>
+
+    <script id="add-app" type="html/template">
+        <div class="add-app-entry">
+            <div class="uploaded-image">
+
+            </div>
+            <p>Add new Application</p>
+
+            <div>
+                <input class="image-input" style="width:53%" type="text" placeholder="Choose Image"/>
+                <button type="button" class="company-logo-fromurl btn btn-primary btn-default">Get from URL</button>
+                <input class="company-logo-upload" id="company-logo" type="file"/>
+            </div>
+            <div>
+                <input class="company-input" type="text" placeholder="Company name"/>
+            </div>
+
+            <div>
+                <input class="position-name-input" type="text" placeholder="Opening Position name"/>
+            </div>
+
+            <div>
+                <input class="contact-input" type="text" placeholder="Contact (leave empty if submitted via site forms)"/>
+            </div>
+
+            <button class="btn btn-primary btn-create-app">Create new Application</button>
+
+            <div>
+                <input class="date-input" type="text" placeholder="Apply Date"/>
+            </div>
+
+        </div>
+    </script>
+
+    <script id="columned-app" type="html/template">
+        <div class="job">
+            <div class="company-icon">
+                <img style="width:63px; height:63px;" src="{{ company_image }}"/>
+            </div>
+            <div class="company-title">{{ company_name }}</div>
+            <div class="company-metadata">
+                <div class="company-job">{{ company_position }}</div>
+                <div class="company-contact">{{ company_contact }}</div>
+                <div class="company-applied-date">{{ apply_date }}</div>
+            </div>
+        </div>
+    </script>
 </body>
 </html>
