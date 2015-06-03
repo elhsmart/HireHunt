@@ -12,9 +12,12 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
     chrome.app.window.create('index.html', {
         id: Date(),
+        frame: { type: "none" },
         outerBounds: {
             width: Math.round(options.width * screen.availWidth),
             height: Math.round(options.height * screen.availHeight),
+            minWidth: 800,
+            minHeight: 500,
             left: Math.round((options.screenWidth - (options.screenWidth * options.width)) / 2),
             top: Math.round((options.screenHeight - (options.screenHeight * options.height)) / 2)
         }
