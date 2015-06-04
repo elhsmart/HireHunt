@@ -45,6 +45,15 @@
             height: 97%;
             border-radius: 10px;
             margin-top: 4%;
+            overflow: hidden;
+        }
+
+        .joblist-inner {
+            right: -15px;
+            overflow: auto;
+            height: 92%;
+            display: inline-block;
+            width: 100%;
         }
 
         .col-header {
@@ -93,11 +102,13 @@
             margin-left: 5px;
             margin-right: 5px;
             float: left;
+            background: white;
         }
 
         .job .company-icon img {
-            width: 64px;
-            height: 64px;
+            width: 63px;
+            height: 63px;
+
         }
 
         .job .company-metadata {
@@ -116,13 +127,6 @@
         .job .company-metadata div.company-applied-date {
             color: #999;
             font-style: italic;
-        }
-
-        .joblist-inner {
-            overflow: scroll;
-            height: 92%;
-            display: inline-block;
-            width: 100%;
         }
 
         .header {
@@ -175,6 +179,7 @@
             min-height: 320px;
             max-height: 400px;
             min-width: 580px;
+            max-width: 580px;
         }
 
         .add-app-entry {
@@ -236,6 +241,11 @@
             margin-right: -74px;
         }
 
+        .uploaded-image .icon-large.icon-film {
+            margin-top: 18px;
+            margin-left: 1px;
+        }
+
         .btn-create-app {
             float:right;
             margin-top:20px;
@@ -253,56 +263,45 @@
         credits
     </div>
     <div class="grid">
-        <div class="column">
+        <div class="column" col_type="1">
             <div class="joblist joblist-appliedto">
                 <div class="col-header">
                     Applied To
                     <i class="icon-large icon-plus-sign"></i>
                 </div>
-                <div class="joblist-inner">
-                    <div class="job">
-                        <div class="company-icon">
-                            <img src="/assets/digitalocean.png"/>
-                        </div>
-                        <div class="company-title">DigitalOcean</div>
-                            <div class="company-metadata">
-                            <div class="company-job">Software Engineer, Front End</div>
-                            <div class="company-contact">@onsite</div>
-                            <div class="company-applied-date">2 June 2015</div>
-                        </div>
-                    </div>
+                <div id="joblist-type-1" class="joblist-inner nano-content">
                 </div>
             </div>
         </div>
-        <div class="column">
+        <div class="column" col_type="2">
             <div class="joblist joblist-testing">
                 <div class="col-header">
                     Testing
                 </div>
-                <div class="joblist-inner">
+                <div  id="joblist-type-2" class="joblist-inner">
                 </div>
             </div>
         </div>
-        <div class="column">
+        <div class="column" col_type="3">
             <div class="joblist joblist-interviewing">
                 <div class="col-header">
                     Interviewing
                 </div>
-                <div class="joblist-inner">
+                <div id="joblist-type-3" class="joblist-inner">
 
                 </div>
             </div>
         </div>
-        <div class="column column-last">
+        <div class="column column-last" col_type="4">
             <div class="joblist joblist-joboffered">
                 <div class="col-header">
                     Job offered
                 </div>
-                <div class="joblist-inner">
+                <div id="joblist-type-4" class="joblist-inner">
 
                 </div>
             </div>
-            <div class="column rejected-can">
+            <div class="column rejected-can" col_type="5">
                 <div class="col-header">
                     Rejected Can
                 </div>
@@ -314,11 +313,13 @@
 
         </div>
     </div>
+    <script id="credits" type="html/template">
 
+    </script>
     <script id="add-app" type="html/template">
         <div class="add-app-entry">
             <div class="uploaded-image">
-
+                <i class="icon-large icon-film"></i>
             </div>
             <p>Add new Application</p>
 
@@ -349,9 +350,9 @@
     </script>
 
     <script id="columned-app" type="html/template">
-        <div class="job">
+        <div class="job" app_id="{{ id }}">
             <div class="company-icon">
-                <img style="width:63px; height:63px;" src="{{ company_image }}"/>
+                <img src="{{ company_image }}"/>
             </div>
             <div class="company-title">{{ company_name }}</div>
             <div class="company-metadata">

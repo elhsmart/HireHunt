@@ -55,6 +55,16 @@ $(document).ready(function(){
 
             $(currentColumn).find(".joblist-inner").append(DragHandler.el);
 
+            var app_id = $(DragHandler.el).attr("app_id");
+            var col_type = parseInt($(currentColumn).attr("col_type"));
+
+            //console.log(app_id, col_type, $(currentColumn));
+
+            AppStorage.get(app_id, function(data) {
+                data['app-' + app_id].type = col_type;
+                AppStorage.update(app_id, data, function(){});
+            });
+
             if($(currentColumn).hasClass("rejected-can")) {
                 $(DragHandler.el).remove();
                 return;
@@ -84,7 +94,41 @@ $(document).ready(function(){
     $(document).mousedown( DragHandler.mouseDown )
 
     document.buttons = {
-        addApp: Dialog.init($("#add-app"), $(".joblist-appliedto .icon-plus-sign"))
+        addApp: Dialog.init($("#add-app"), $(".joblist-appliedto .icon-plus-sign")),
+        credits: Dialog.init($("#credits"), $(".credits"))
     }
 
+    window.addEventListener('storageLoaded', function() {
+        AppStorage.getAll(function(data){
+            var appBlock
+            for (var app in data) {
+                if (data.hasOwnProperty(app)) {
+                    var application = data[app];
+
+                    appBlock = Ashe.parse($("#columned-app").html(), application);
+                    $(appBlock).find("img").attr('src', application.company_image);
+
+                    switch(application.type) {
+                        case AppTypes.applied_to: {
+                            $(".joblist-appliedto .joblist-inner").append(appBlock);
+                            break;
+                        }
+                        case AppTypes.interviewing: {
+                            $(".joblist-interviewing .joblist-inner").append(appBlock);
+                            break;
+                        }
+                        case AppTypes.job_offered: {
+                            $(".joblist-joboffered .joblist-inner").append(appBlock);
+                            break;
+                        }
+                        case AppTypes.testing: {
+                            console.log("!!!!");
+                            $(".joblist-testing .joblist-inner").append(appBlock);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+    });
 })

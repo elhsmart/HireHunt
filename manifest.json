@@ -15,20 +15,10 @@
   },
 
   "permissions": [
-      "<all_urls>",
-      "webview",
-      "system.display",
-      "http://*/*",
-      "https://*/*",
-      "contextMenus",
-      "unlimitedStorage",
-      "storage",
-      "fileSystem",
-      "fileSystem.write",
-      "fileSystem.directory"
-    ],
-
-  "sandbox": {
-    "pages": ["index.html"]
-  }
+    "storage",
+    "unlimitedStorage",
+    "<all_urls>",
+    "http://*/*",
+    "https://*/*"
+  ]
 }
