@@ -279,6 +279,10 @@ var TemplateEnv = {
     },
 
     "credits": function(self) {
-
+        $(".blackout .about-contents a").each(function(){
+            $(this).click(function(){
+                window.open($(this).attr('href'));
+            })
+        });
     }
 }
