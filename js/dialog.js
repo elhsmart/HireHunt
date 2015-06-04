@@ -65,24 +65,25 @@ var AppStorage = {
 
 AppStorage.init();
 
-var Dialog = {
+var Dialog = function(tpl, element) {
+    var obj = {
         tpl: null,
-        element: null,
+            element: null,
         id: null,
 
         displayModal: function() {
-            var self = this;
+        var self = this;
 
-            $(".blackout").css({
-                "display": "block"
-            })
+        $(".blackout").css({
+            "display": "block"
+        })
 
-            $(".blackout .dialog-tpl").html(
-                Ashe.parse(self.tpl.html(), {})
-            )
+        $(".blackout .dialog-tpl").html(
+            Ashe.parse(self.tpl.html(), {})
+        )
 
-            TemplateEnv[$(self.tpl).attr("id")](self);
-        },
+        TemplateEnv[$(self.tpl).attr("id")](self);
+    },
 
         hideModal: function (e) {
             if(e && $(document.elementFromPoint(e.clientX, e.clientY)).hasClass("blackout")) {
@@ -107,7 +108,10 @@ var Dialog = {
 
             return self;
         }
-    };
+    }
+
+    return obj.init(tpl, element);
+};
 
 // Template-related code
 

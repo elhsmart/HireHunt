@@ -49,3 +49,267 @@ table {
 html, body, .grid {
     height: 100%;
 }
+
+
+html {
+    font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.grid {
+    margin-right:1%;
+}
+
+.column {
+    display: block;
+    width: 25%;
+    height: 100%;
+    position: relative;
+    float:left;
+    text-align: center;
+}
+
+.joblist {
+    background: #ECECEF;
+    margin-left: 4%;
+    height: 97%;
+    border-radius: 10px;
+    margin-top: 4%;
+    overflow: hidden;
+}
+
+.joblist-inner {
+    right: -15px;
+    overflow: auto;
+    height: 92%;
+    display: inline-block;
+    width: 100%;
+}
+
+.col-header {
+    color: #555;
+    padding: 14px;
+    padding-left: 20px;
+    text-align: left;
+    font-size: 18px;
+}
+
+.column.column-last {
+    height:80%;
+}
+
+.column.rejected-can {
+    width: 95%;
+    background: #ECECEF;
+    border-radius: 10px !important;
+    height: 22%;
+    margin-left: 4%;
+    margin-top: 4%;
+}
+
+.col-header .icon-large {
+    float: right;
+    opacity: 0.5;
+    margin-top: -4px;
+}
+
+.job {
+    width: 95%;
+    display: inline-block;
+    margin-top: 5px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: left;
+}
+
+.job .company-icon {
+    width: 64px;
+    height: 64px;
+    background: #eee;
+    margin-left: 5px;
+    margin-right: 5px;
+    float: left;
+    background: white;
+}
+
+.job .company-icon img {
+    width: 63px;
+    height: 63px;
+
+}
+
+.job .company-metadata {
+    margin-top:5px;
+    font-size: 12px !important;
+}
+
+.job .company-metadata div {
+    overflow: hidden;
+    position: static;
+    color: #777;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.job .company-metadata div.company-applied-date {
+    color: #999;
+    font-style: italic;
+}
+
+.header {
+    height: 5%;
+    margin-right: -5% !important;
+    background: #DFF7E5;
+}
+
+.credits {
+    position: absolute;
+    width: 60px;
+    height: 26px;
+    padding: 8px;
+    left: 100%;
+    z-index: 100;
+    margin-top: 0px;
+    background: rgba(0, 112, 255, 0.49);
+    margin-left: -70px;
+    padding-top: 4px;
+    color: #002761;
+    opacity: 1 !important;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.blackout {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    display: none;
+    overflow: hidden;
+    outline: 0;
+    transition: opacity .15s linear;
+    background: rgba(15, 15, 15, 0.7);
+    text-align: center;
+
+}
+
+.blackout .dialog-tpl {
+    display: inline-block;;
+    position: relative;
+    box-sizing: border-box;
+    background: #fff;
+    width: 50%;
+    height: 50%;
+    margin-top: 15%;
+    min-height: 320px;
+    max-height: 400px;
+    min-width: 580px;
+    max-width: 580px;
+}
+
+.add-app-entry {
+
+}
+
+.add-app-entry p {
+    padding: 20px;
+    color: #555;
+    font-weight: 200;
+    font-size: 24px;
+}
+
+.add-app-entry input {
+    margin: 0em;
+    text-rendering: auto;
+    color: initial;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    padding-left:10px;
+    text-align: start;
+    height: 34px;
+    font-size: 18px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    margin-top:12px;
+    width:92%;
+}
+
+.company-logo-upload {
+    float:left;
+    margin-top:-2px !important;
+}
+
+.company-logo-fromurl {
+    margin-left: 1%;
+    margin-top: -4px;
+}
+
+.btn.btn-file {
+    margin-top: -4px;
+    margin-left: 1%;
+}
+
+.uploaded-image {
+    border: 1px solid #ccc;
+    width: 64px;
+    height: 64px;
+    float: left;
+    margin-top: 20px;
+    margin-left: 24px;
+    margin-right: -74px;
+}
+
+.uploaded-image .icon-large.icon-film {
+    margin-top: 18px;
+    margin-left: 1px;
+}
+
+.btn-create-app {
+    float:right;
+    margin-top:20px;
+    margin-right:4%;
+}
+
+.date-input {
+    width: 40% !important;
+    float: left ;
+    margin-left: 4% !important;
+    margin-top: 20px !important;
+}
+
+.about-contents {
+    text-align: left;
+}
+
+.about-title h1 {
+    float: left;
+    margin-top: 38px;
+    margin-left: -10px;
+}
+
+.about-contents .version {
+    margin-top: 42px;
+    margin-left: 10px;
+    float: left;
+}
+
+.about-contents .about-text {
+    float:left; width:95%; padding-left:32px;
+}
+
+.about-contents .about-text div {
+    float:left;
+    margin-top:12px;
+    width: 95%;
+}

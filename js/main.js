@@ -94,8 +94,8 @@ $(document).ready(function(){
     $(document).mousedown( DragHandler.mouseDown )
 
     document.buttons = {
-        addApp: Dialog.init($("#add-app"), $(".joblist-appliedto .icon-plus-sign")),
-        credits: Dialog.init($("#credits"), $(".credits"))
+        addApp: Dialog($("#add-app"), $(".joblist-appliedto .icon-plus-sign")),
+        credits: Dialog($("#credits"), $(".credits"))
     }
 
     window.addEventListener('storageLoaded', function() {
