@@ -117,6 +117,11 @@ var Dialog = function(tpl, element) {
 
 var TemplateEnv = {
     "add-app": function(self) {
+
+        function gcd (a, b) {
+            return a/b;
+        }
+
         $(".blackout .dialog-tpl input[type=file]").fileinput({
             showCaption: false,
             showPreview: false,
@@ -171,13 +176,36 @@ var TemplateEnv = {
                 };
 
                 img.onload = function() {
+                    this.onload = function() {};
+                    
                     $(img).css({
                         "width":"63px",
                         "height":"63px"
                     });
 
+                    var canvas = document.createElement("canvas");
+                    var ctx = canvas.getContext("2d");
+
+                    canvas.width = 64;
+                    canvas.height = 64;
+
+                    var aspect = gcd(this.width, this.height);
+
+                    if(aspect > 1) {
+                        //width > height
+                        var wh = this.height / (this.width / 64);
+                        ctx.drawImage(this, 0, parseInt((64 - wh) / 2), 64, wh);
+                        this.src = canvas.toDataURL("image/png");
+                    } else {
+                        //width > height
+                        var wh = this.width / (this.height / 64);
+                        ctx.drawImage(this, parseInt((64 - wh) / 2) ,0, 64, wh);
+                        this.src = canvas.toDataURL("image/png");
+                    }
+
                     $(".uploaded-image").html("").append($(img));
                 }
+
                 img.src = window.webkitURL.createObjectURL(this.response);
             };
 
