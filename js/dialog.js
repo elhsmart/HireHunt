@@ -133,8 +133,42 @@ var TemplateEnv = {
 
         $('.blackout .dialog-tpl input[type=file]').on('fileloaded', function(e, file, preview, id, reader) {
             reader.onload = function(e) {
+                console.log(reader);
                 var dataURL = reader.result;
-                $(".uploaded-image").html("<img style='width:63px; height:63px' src='" + dataURL + "'/>")
+                var img = new Image();
+
+                img.onload = function() {
+                    this.onload = function() {};
+
+                    $(img).css({
+                        "width":"63px",
+                        "height":"63px"
+                    });
+
+                    var canvas = document.createElement("canvas");
+                    var ctx = canvas.getContext("2d");
+
+                    canvas.width = 64;
+                    canvas.height = 64;
+
+                    var aspect = gcd(this.width, this.height);
+
+                    if(aspect > 1) {
+                        //width > height
+                        var wh = this.height / (this.width / 64);
+                        ctx.drawImage(this, 0, parseInt((64 - wh) / 2), 64, wh);
+                        this.src = canvas.toDataURL("image/png");
+                    } else {
+                        //width > height
+                        var wh = this.width / (this.height / 64);
+                        ctx.drawImage(this, parseInt((64 - wh) / 2) ,0, 64, wh);
+                        this.src = canvas.toDataURL("image/png");
+                    }
+
+                    $(".uploaded-image").html("").append($(img));
+                }
+
+                img.src = dataURL;
             }
             reader.readAsDataURL(file)
         });
@@ -177,7 +211,7 @@ var TemplateEnv = {
 
                 img.onload = function() {
                     this.onload = function() {};
-                    
+
                     $(img).css({
                         "width":"63px",
                         "height":"63px"

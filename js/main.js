@@ -122,7 +122,6 @@ $(document).ready(function(){
                             break;
                         }
                         case AppTypes.testing: {
-                            console.log("!!!!");
                             $(".joblist-testing .joblist-inner").append(appBlock);
                             break;
                         }
