@@ -337,7 +337,9 @@ var TemplateEnv = {
             self.hideModal({clientX: 0, clientY: 0});
         });
 
-        $('.date-input').datepicker({});
+        $('.date-input').datepicker({
+            endDate: new Date()
+        });
     },
 
     "columned-app": function(self) {
