@@ -207,6 +207,8 @@ var TemplateEnv = {
                     setTimeout(function(){
                         $(".image-input").popover('hide');
                     }, 3000);
+                    
+                    $(".uploaded-image").html('<i class="icon-large icon-film"></i>');
                 };
 
                 img.onload = function() {
