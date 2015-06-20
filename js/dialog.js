@@ -292,52 +292,46 @@ var TemplateEnv = {
                 return;
             }
 
-            if($(".uploaded-image img").length == 0) {
-                $(".image-input").popover({
-                    title: "Validation Error",
-                    content: "Please provide image for this position.",
-                    placement: 'left',
-                    trigger: 'manual'
-                }).popover('show');
-                setTimeout(function(){
-                    $(".image-input").popover('hide');
-                }, 3000);
-
-                return;
-            }
-
             var img = new Image();
-            img.src = $(".uploaded-image img")[0].src;
 
-            var canvas = document.createElement("canvas");
-            canvas.width = img.width;
-            canvas.height = img.height;
+            img.onload = function() {
 
-            var ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0);
-            var imageDataURL = canvas.toDataURL("image/png");
+                var canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
 
-            var storageData = {
-                company_name: $(".company-input").val(),
-                company_position: $(".position-name-input").val(),
-                company_contact: $(".contact-input").val().length ? $(".contact-input").val() : "@onsite",
-                company_image: imageDataURL,
-                apply_date: $(".date-input").val().length ? new Date($(".date-input").val()).format("j F Y") : new Date().format("j F Y"),
-                create_date: (new Date() / 1000 | 0),
-                update_date: null,
-                position: 0,
-                type: AppTypes.applied_to,
-                id:( new Date() / 1000 | 0).toString(16)
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(this, 0, 0);
+                var imageDataURL = canvas.toDataURL("image/png");
+
+                var storageData = {
+                    company_name: $(".company-input").val(),
+                    company_position: $(".position-name-input").val(),
+                    company_contact: $(".contact-input").val().length ? $(".contact-input").val() : "@onsite",
+                    company_image: imageDataURL,
+                    apply_date: $(".date-input").val().length ? new Date($(".date-input").val()).format("j F Y") : new Date().format("j F Y"),
+                    create_date: (new Date() / 1000 | 0),
+                    update_date: null,
+                    position: 0,
+                    type: AppTypes.applied_to,
+                    id:( new Date() / 1000 | 0).toString(16)
+                }
+
+                AppStorage.set(storageData);
+
+                var newApp = Ashe.parse($("#columned-app").html(), storageData);
+
+                $(newApp).find("img").attr('src', storageData.company_image);
+                $(".joblist.joblist-appliedto .joblist-inner").append($(newApp));
+
+                self.hideModal({clientX: 0, clientY: 0});
             }
 
-            AppStorage.set(storageData);
-
-            var newApp = Ashe.parse($("#columned-app").html(), storageData);
-
-            $(newApp).find("img").attr('src', storageData.company_image);
-            $(".joblist.joblist-appliedto .joblist-inner").append($(newApp));
-
-            self.hideModal({clientX: 0, clientY: 0});
+            if($(".uploaded-image img").length == 0) {
+                img.src = 'assets/no_pic.gif';
+            } else {
+                img.src = $(".uploaded-image img")[0].src;
+            }
         });
 
         $('.date-input').datepicker({
