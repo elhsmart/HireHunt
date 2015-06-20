@@ -313,3 +313,23 @@ html {
     margin-top:12px;
     width: 95%;
 }
+
+.close-button .icon-remove-sign {
+    float: right;
+    margin-top: -76px;
+    margin-right: 5px;
+    opacity: 0.5;
+}
+
+.about-contents .close-button .icon-remove-sign {
+    margin-top: 8px;
+}
+.close-button .icon-remove-sign:hover {
+    float: right;
+    margin-right: 5px;
+    opacity: 0.7;
+}
+
+.col-header .icon-large.icon-plus-sign:hover {
+    opacity: 0.7;
+}

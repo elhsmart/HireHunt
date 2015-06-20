@@ -207,7 +207,7 @@ var TemplateEnv = {
                     setTimeout(function(){
                         $(".image-input").popover('hide');
                     }, 3000);
-                    
+
                     $(".uploaded-image").html('<i class="icon-large icon-film"></i>');
                 };
 
@@ -336,12 +336,17 @@ var TemplateEnv = {
 
             $(newApp).find("img").attr('src', storageData.company_image);
             $(".joblist.joblist-appliedto .joblist-inner").append($(newApp));
+
             self.hideModal({clientX: 0, clientY: 0});
         });
 
         $('.date-input').datepicker({
             endDate: new Date()
         });
+
+        $('.close-button .icon-remove-sign').click(function(){
+            self.hideModal({clientX: 0, clientY: 0});
+        })
     },
 
     "columned-app": function(self) {
@@ -354,5 +359,9 @@ var TemplateEnv = {
                 window.open($(this).attr('href'));
             })
         });
+
+        $('.close-button .icon-remove-sign').click(function(){
+            self.hideModal({clientX: 0, clientY: 0});
+        })
     }
 }
