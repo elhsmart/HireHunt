@@ -6,4 +6,4 @@ Feel free to try in as Unpacked chrome app via Chrom Applications Developers too
 
 Chrome store link: https://chrome.google.com/webstore/detail/hirehunt/cjgkbdcbpfnicilgkeaibkgmbabmdige
 
-
+See CHANGELOG.md for updates

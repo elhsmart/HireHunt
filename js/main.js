@@ -17,6 +17,10 @@ $(document).ready(function(){
                 } else {
                     return;
                 }
+
+                if($(DragHandler.el).hasClass("removed-job")) {
+                    return;
+                }
             }
 
             DragHandler.pos.x = e.clientX - $(DragHandler.el).position().left;
@@ -58,14 +62,14 @@ $(document).ready(function(){
             var app_id = $(DragHandler.el).attr("app_id");
             var col_type = parseInt($(currentColumn).attr("col_type"));
 
-            //console.log(app_id, col_type, $(currentColumn));
-
             AppStorage.get(app_id, function(data) {
                 data['app-' + app_id].type = col_type;
+                data['app-' + app_id].update_date = (new Date() / 1000 | 0);
                 AppStorage.update(app_id, data, function(){});
             });
 
             if($(currentColumn).hasClass("rejected-can")) {
+                $(".rejected-can-total .total-items").html(parseInt($(".rejected-can-total .total-items").html())+1);
                 $(DragHandler.el).remove();
                 return;
             }
@@ -95,39 +99,45 @@ $(document).ready(function(){
 
     document.buttons = {
         addApp: Dialog($("#add-app"), $(".joblist-appliedto .icon-plus-sign")),
-        credits: Dialog($("#credits"), $(".credits"))
+        credits: Dialog($("#credits"), $(".credits")),
+        trashCan: Dialog($("#rejected-can"), $(".column .rejected-can"))
     }
+})
 
-    window.addEventListener('storageLoaded', function() {
-        AppStorage.getAll(function(data){
-            var appBlock
-            for (var app in data) {
-                if (data.hasOwnProperty(app)) {
-                    var application = data[app];
+window.addEventListener('storageLoaded', function() {
+    AppStorage.getAll(function(data){
+        var appBlock, trashCanCount = 0;
+        for (var app in data) {
+            if (data.hasOwnProperty(app)) {
+                var application = data[app];
 
-                    appBlock = Ashe.parse($("#columned-app").html(), application);
-                    $(appBlock).find("img").attr('src', application.company_image);
+                appBlock = Ashe.parse($("#columned-app").html(), application);
+                $(appBlock).find("img").attr('src', application.company_image);
 
-                    switch(application.type) {
-                        case AppTypes.applied_to: {
-                            $(".joblist-appliedto .joblist-inner").append(appBlock);
-                            break;
-                        }
-                        case AppTypes.interviewing: {
-                            $(".joblist-interviewing .joblist-inner").append(appBlock);
-                            break;
-                        }
-                        case AppTypes.job_offered: {
-                            $(".joblist-joboffered .joblist-inner").append(appBlock);
-                            break;
-                        }
-                        case AppTypes.testing: {
-                            $(".joblist-testing .joblist-inner").append(appBlock);
-                            break;
-                        }
+                switch(application.type) {
+                    case AppTypes.applied_to: {
+                        $(".joblist-appliedto .joblist-inner").append(appBlock);
+                        break;
+                    }
+                    case AppTypes.interviewing: {
+                        $(".joblist-interviewing .joblist-inner").append(appBlock);
+                        break;
+                    }
+                    case AppTypes.job_offered: {
+                        $(".joblist-joboffered .joblist-inner").append(appBlock);
+                        break;
+                    }
+                    case AppTypes.testing: {
+                        $(".joblist-testing .joblist-inner").append(appBlock);
+                        break;
+                    }
+                    case AppTypes.trash: {
+                        trashCanCount++;
                     }
                 }
             }
-        });
+        }
+
+        $(".rejected-can-total .total-items").html(trashCanCount);
     });
-})
+});

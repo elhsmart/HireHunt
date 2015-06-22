@@ -66,16 +66,30 @@
             <div class="column rejected-can" col_type="5">
                 <div class="col-header">
                     Rejected Can
+                    <div class="rejected-can-total">
+                        Total Items: <span class="total-items">0</span><br/>
+                        <span class="total-help">Click to see more</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="blackout">
         <div class="dialog-tpl">
-
         </div>
     </div>
 
+    <script id="rejected-can" type="html/template">
+        <div class="rejected-can-contents">
+            <div class="dialog-header">Rejected Can<span class="header-help">Items will be dropped after 30 days.</span></div>
+            <div class="close-button">
+                <i class="icon-large icon-remove-sign"></i>
+            </div>
+            <div class="removed-jobs">
+
+            </div>
+        </div>
+    </script>
     <script id="credits" type="html/template">
         <div class="about-contents">
 
@@ -139,6 +153,24 @@
                 <div class="company-job">{{ company_position }}</div>
                 <div class="company-contact">{{ company_contact }}</div>
                 <div class="company-applied-date">{{ apply_date }}</div>
+            </div>
+        </div>
+    </script>
+
+    <script id="columned-app-removed" type="html/template">
+        <div class="job removed-job" app_id="{{ id }}">
+            <div class="company-icon">
+                <img src="{{ company_image }}"/>
+            </div>
+            <div class="company-title">{{ company_name }}</div>
+            <div class="company-metadata">
+                <div class="company-job">{{ company_position }}</div>
+                <div class="company-contact">{{ company_contact }}</div>
+                <div class="company-applied-date">{{ apply_date }}</div>
+            </div>
+            <div class="controls">
+                <i title="Restore" class="icon-large icon-repeat"></i>
+                <i title="Remove" class="icon-large icon-remove"></i>
             </div>
         </div>
     </script>

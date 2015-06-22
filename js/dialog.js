@@ -43,10 +43,17 @@ var AppStorage = {
         }
     },
 
-    update: function(app_id, data,  callback) {
+    update: function(app_id, data, callback) {
         var self = this;
         if(self.storage.indexOf(app_id) != -1) {
             chrome.storage.local.set(data, callback);
+        }
+    },
+
+    remove: function(app_id, callback) {
+        var self = this;
+        if(self.storage.indexOf(app_id) != -1) {
+            chrome.storage.local.remove("app-" + app_id, callback);
         }
     },
 
@@ -72,18 +79,18 @@ var Dialog = function(tpl, element) {
         id: null,
 
         displayModal: function() {
-        var self = this;
+            var self = this;
 
-        $(".blackout").css({
-            "display": "block"
-        })
+            $(".blackout").css({
+                "display": "block"
+            })
 
-        $(".blackout .dialog-tpl").html(
-            Ashe.parse(self.tpl.html(), {})
-        )
+            $(".blackout .dialog-tpl").html(
+                Ashe.parse(self.tpl.html(), {})
+            )
 
-        TemplateEnv[$(self.tpl).attr("id")](self);
-    },
+            TemplateEnv[$(self.tpl).attr("id")](self);
+        },
 
         hideModal: function (e) {
             if(e && $(document.elementFromPoint(e.clientX, e.clientY)).hasClass("blackout")) {
@@ -116,6 +123,59 @@ var Dialog = function(tpl, element) {
 // Template-related code
 
 var TemplateEnv = {
+    "rejected-can": function(self) {
+        AppStorage.getAll(function(data){
+            var appBlock, trashCanCount = 0;
+            for (var app in data) {
+                if (data.hasOwnProperty(app)) {
+                    var application = data[app];
+
+                    appBlock = Ashe.parse($("#columned-app-removed").html(), application);
+                    $(appBlock).find("img").attr('src', application.company_image);
+
+                    switch(application.type) {
+                        case AppTypes.trash: {
+                            $(".rejected-can-contents .removed-jobs").append(appBlock);
+                        }
+                    }
+                }
+            }
+
+            $(".rejected-can-contents .icon-remove").click(function(){
+                var can_element = $(this).parents(".job");
+                var app_id = can_element.attr("app_id");
+
+                AppStorage.remove(app_id, function(){
+                    can_element.remove();
+                    $(".rejected-can-total .total-items").html(parseInt($(".rejected-can-total .total-items").html())-1);
+                })
+            });
+
+            $(".rejected-can-contents .icon-repeat").click(function(){
+                var can_element = $(this).parents(".job");
+                var app_id = can_element.attr("app_id");
+
+                AppStorage.get(app_id, function(data) {
+
+                    data['app-' + app_id].type = AppTypes.applied_to;
+                    data['app-' + app_id].update_date = (new Date() / 1000 | 0);
+
+                    AppStorage.update(app_id, data, function(){
+                        appBlock = Ashe.parse($("#columned-app").html(), data['app-' + app_id]);
+                        $(".joblist-appliedto .joblist-inner").append(appBlock);
+                        can_element.remove();
+
+                        $(".rejected-can-total .total-items").html(parseInt($(".rejected-can-total .total-items").html())-1);
+                    });
+                });
+            });
+        });
+
+        $('.close-button .icon-remove-sign').click(function(){
+            self.hideModal({clientX: 0, clientY: 0});
+        })
+    },
+
     "add-app": function(self) {
 
         function gcd (a, b) {
@@ -341,10 +401,6 @@ var TemplateEnv = {
         $('.close-button .icon-remove-sign').click(function(){
             self.hideModal({clientX: 0, clientY: 0});
         })
-    },
-
-    "columned-app": function(self) {
-
     },
 
     "credits": function(self) {
