@@ -8,13 +8,25 @@ var AppTypes = {
 
 var AppStorage = {
     storage: [],
+    options: {},
 
     init: function() {
         var self = this;
 
-        chrome.storage.local.get("apps-map", function(result){
+        chrome.storage.local.get(["apps-map", "apps-options"], function(result){
             if(result['apps-map'] instanceof Array) {
                 self.storage = result['apps-map'];
+                self.options = result['apps-options'];
+
+                if(typeof self.options == "undefined") {
+                    self.options = {};
+                }
+
+                if(typeof self.options.version == "undefined") {
+                    self.options.version = "0.1.0"; //default version
+                }
+
+                self.upgrade();
 
                 var storageLoadedEvent = new CustomEvent("storageLoaded", {});
                 window.dispatchEvent(storageLoadedEvent);
@@ -27,7 +39,7 @@ var AppStorage = {
 
         self.storage.push(data.id);
 
-        var dataObj = {"apps-map": this.storage};
+        var dataObj = {"apps-map": this.storage, "apps-options": this.options};
         var databag_name = "app-"+data.id;
         dataObj[databag_name] = data
 
@@ -64,8 +76,21 @@ var AppStorage = {
             for(i = 0; i < self.storage.length; i++) {
                 ids.push("app-" + self.storage[i]);
             }
-
             chrome.storage.local.get(ids, callback);
+        }
+    },
+
+    //Here we go with old data consistency checks and migrations through versions
+    upgrade: function() {
+        var self = this;
+        var manifest = chrome.runtime.getManifest();
+
+        for(v in Migrations) {
+            if(Migrations.hasOwnProperty(v)) {
+                if(v < manifest.version && self.options.version < manifest.version) {
+                    Migrations[v]();
+                }
+            }
         }
     }
 };
