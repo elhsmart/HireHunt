@@ -72,13 +72,16 @@ var AppStorage = {
 
 AppStorage.init();
 
-var Dialog = function(tpl, element) {
+var Dialog = function(tpl, element, data) {
     var obj = {
         tpl: null,
             element: null,
         id: null,
 
         displayModal: function() {
+            if(typeof data != "object") {
+                data = {};
+            }
             var self = this;
 
             $(".blackout").css({
@@ -86,7 +89,7 @@ var Dialog = function(tpl, element) {
             })
 
             $(".blackout .dialog-tpl").html(
-                Ashe.parse(self.tpl.html(), {})
+                Ashe.parse(self.tpl.html(), data)
             )
 
             TemplateEnv[$(self.tpl).attr("id")](self);

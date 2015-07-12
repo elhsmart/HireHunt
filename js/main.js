@@ -1,5 +1,7 @@
 $(document).ready(function(){
 
+    var manifest = manifest = chrome.runtime.getManifest();
+
     var DragHandler = {
 
         pos: {
@@ -99,7 +101,7 @@ $(document).ready(function(){
 
     document.buttons = {
         addApp: Dialog($("#add-app"), $(".joblist-appliedto .icon-plus-sign")),
-        credits: Dialog($("#credits"), $(".credits")),
+        credits: Dialog($("#credits"), $(".credits"), manifest),
         trashCan: Dialog($("#rejected-can"), $(".column .rejected-can"))
     }
 })

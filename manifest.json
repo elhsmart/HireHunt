@@ -1,7 +1,8 @@
 {
   "manifest_version": 2,
   "name": "HireHunt",
-  "version": "0.2",
+  "version": "0.3.1",
+  "description": "Small Kanban board for job seekers.",
   "minimum_chrome_version": "23",
   "icons": {
 
@@ -22,3 +23,5 @@
     "https://*/*"
   ]
 }
+
+
