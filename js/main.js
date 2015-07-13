@@ -109,34 +109,57 @@ $(document).ready(function(){
             $(document).unbind("mousemove");
             $(document).unbind("mouseup");
 
-            $(currentColumn).find(".joblist-inner").append(DragHandler.el);
+            $(currentColumn).find(".job-placeholder").before(DragHandler.el);
 
             var app_id = $(DragHandler.el).attr("app_id");
             var col_type = parseInt($(currentColumn).attr("col_type"));
 
             AppStorage.get(app_id, function(data) {
+                var old_type = data['app-' + app_id].type;
                 data['app-' + app_id].type = col_type;
                 data['app-' + app_id].update_date = (new Date() / 1000 | 0);
                 AppStorage.update(app_id, data, function(){});
+
+                if($(currentColumn).hasClass("rejected-can")) {
+                    $(".rejected-can-total .total-items").html(parseInt($(".rejected-can-total .total-items").html())+1);
+                    $(DragHandler.el).remove();
+                    return;
+                }
+
+                var position = 0;
+                //Update positions in new column
+                $(currentColumn).find(".job").each(function() {
+                    var app_id = $(this).attr("app_id");
+                    AppStorage.get(app_id, function(data) {
+                        data['app-' + app_id].position = position;
+                        AppStorage.update(app_id, data, function(){});
+                        position++;
+                    });
+                });
+
+                //Update positions in old column
+                position = 0;
+                $(".column[col_type="+old_type+"]").find(".job").each(function() {
+                    var app_id = $(this).attr("app_id");
+                    AppStorage.get(app_id, function(data) {
+                        data['app-' + app_id].position = position;
+                        AppStorage.update(app_id, data, function(){});
+                        position++;
+                    });
+                });
+
+                $(DragHandler.el).css({
+                    position: '',
+                    top: '',
+                    left: '',
+                    zIndex: 0
+                })
+
+                $(".job-placeholder").remove();
+
+                $(DragHandler.el).removeClass("job-moved");
+                DragHandler.el = null;
             });
-
-            if($(currentColumn).hasClass("rejected-can")) {
-                $(".rejected-can-total .total-items").html(parseInt($(".rejected-can-total .total-items").html())+1);
-                $(DragHandler.el).remove();
-                return;
-            }
-
-            $(DragHandler.el).css({
-                position: '',
-                top: '',
-                left: '',
-                zIndex: 0
-            })
-
-            $(".job-placeholder").remove();
-
-            $(DragHandler.el).removeClass("job-moved");
-            DragHandler.el = null;
         },
 
         mouseMove: function(e) {
