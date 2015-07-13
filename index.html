@@ -109,6 +109,24 @@
         </div>
     </script>
 
+    <script id="add-note" type="html/template">
+        <div class="add-app-entry">
+            <div class="uploaded-image">
+                <i class="icon-large icon-film"></i>
+            </div>
+            <p>Add Application notes</p>
+            <div class="close-button">
+                <i class="icon-large icon-remove-sign"></i>
+            </div>
+
+            <div>
+                <textarea id="application-note" class="application-note" placeholder="Type your note here">{{ note }}</textarea>
+            </div>
+
+            <button class="btn btn-primary btn-create-app">Update note</button>
+        </div>
+    </script>
+
     <script id="add-app" type="html/template">
         <div class="add-app-entry">
             <div class="uploaded-image">
@@ -156,6 +174,7 @@
                 <div class="company-contact">{{ company_contact }}</div>
                 <div class="company-applied-date">{{ apply_date }}</div>
             </div>
+            <div class="notes-corner{% if notes %} noted{% endif %}"></div>
         </div>
     </script>
 

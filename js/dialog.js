@@ -100,7 +100,8 @@ AppStorage.init();
 var Dialog = function(tpl, element, data) {
     var obj = {
         tpl: null,
-            element: null,
+        element: null,
+        initiator: null,
         id: null,
 
         displayModal: function() {
@@ -130,12 +131,12 @@ var Dialog = function(tpl, element, data) {
 
         init: function(tpl, element) {
             var self = this;
-
             self.element = element;
             self.tpl = tpl;
             self.id = new Date().getTime() | 0;
 
             $(element).click(function(){
+                self.initiator = this;
                 self.displayModal();
             })
 
@@ -221,7 +222,6 @@ var TemplateEnv = {
 
         $('.blackout .dialog-tpl input[type=file]').on('fileloaded', function(e, file, preview, id, reader) {
             reader.onload = function(e) {
-                console.log(reader);
                 var dataURL = reader.result;
                 var img = new Image();
 
@@ -400,7 +400,7 @@ var TemplateEnv = {
                     apply_date: $(".date-input").val().length ? new Date($(".date-input").val()).format("j F Y") : new Date().format("j F Y"),
                     create_date: (new Date() / 1000 | 0),
                     update_date: null,
-                    position: 0,
+                    position: $(".joblist.joblist-appliedto").find(".job").length,
                     type: AppTypes.applied_to,
                     id:( new Date() / 1000 | 0).toString(16)
                 }
@@ -436,6 +436,44 @@ var TemplateEnv = {
             $(this).click(function(){
                 window.open($(this).attr('href'));
             })
+        });
+
+        $('.close-button .icon-remove-sign').click(function(){
+            self.hideModal({clientX: 0, clientY: 0});
+        })
+    },
+    "add-note": function(self) {
+        var app_id = $(document.buttons.addNotes.initiator).parent(".job").attr("app_id");
+        AppStorage.get(app_id, function(data) {
+            $(".btn-create-app").click(function() {
+                var note = $("#application-note").val();
+                data['app-' + app_id].notes = note;
+
+                AppStorage.update(app_id, data, function(){
+                    if(note.length > 0) {
+                        $(".job[app_id=" + app_id + "] .notes-corner").addClass("noted");
+                    } else {
+                        $(".job[app_id=" + app_id + "] .notes-corner").removeClass("noted");
+                    }
+                    self.hideModal({clientX: 0, clientY: 0});
+                });
+            });
+
+            if(data['app-' + app_id].notes) {
+                $("#application-note").val(data['app-' + app_id].notes);
+            }
+
+            var img = document.createElement('img');
+            img.onload = function(){
+                $(".uploaded-image").html("").append($(img));
+            };
+
+            $(img).css({
+                "width":"63px",
+                "height":"63px"
+            });
+
+            img.src = data['app-' + app_id].company_image;
         });
 
         $('.close-button .icon-remove-sign').click(function(){

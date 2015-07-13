@@ -1,7 +1,5 @@
 $(document).ready(function(){
 
-    var manifest = chrome.runtime.getManifest();
-
     var DragHandler = {
 
         pos: {
@@ -75,6 +73,9 @@ $(document).ready(function(){
         mouseDown: function(e) {
             DragHandler.el = document.elementFromPoint(e.clientX, e.clientY);
             if(!$(DragHandler.el).hasClass("job")) {
+                if($(DragHandler.el).hasClass("notes-corner")) {
+                    return;
+                }
 
                 if($(DragHandler.el).parents(".job").length > 0) {
                     DragHandler.el = $(DragHandler.el).parents(".job")[0];
@@ -104,11 +105,20 @@ $(document).ready(function(){
         },
 
         mouseUp: function(e) {
+
             var currentColumn = DragHandler.getCurrentColumn(e);
 
             $(document).unbind("mousemove");
             $(document).unbind("mouseup");
 
+            $(DragHandler.el).css({
+                position: '',
+                top: '',
+                left: '',
+                zIndex: 0
+            })
+
+            $(currentColumn).find(".job-placeholder").css({'display':'none'});
             $(currentColumn).find(".job-placeholder").before(DragHandler.el);
 
             var app_id = $(DragHandler.el).attr("app_id");
@@ -118,47 +128,41 @@ $(document).ready(function(){
                 var old_type = data['app-' + app_id].type;
                 data['app-' + app_id].type = col_type;
                 data['app-' + app_id].update_date = (new Date() / 1000 | 0);
-                AppStorage.update(app_id, data, function(){});
+                AppStorage.update(app_id, data, function() {
+                    if ($(currentColumn).hasClass("rejected-can")) {
+                        $(".rejected-can-total .total-items").html(parseInt($(".rejected-can-total .total-items").html()) + 1);
+                        $(DragHandler.el).remove();
+                        return;
+                    }
 
-                if($(currentColumn).hasClass("rejected-can")) {
-                    $(".rejected-can-total .total-items").html(parseInt($(".rejected-can-total .total-items").html())+1);
-                    $(DragHandler.el).remove();
-                    return;
-                }
-
-                var position = 0;
-                //Update positions in new column
-                $(currentColumn).find(".job").each(function() {
-                    var app_id = $(this).attr("app_id");
-                    AppStorage.get(app_id, function(data) {
-                        data['app-' + app_id].position = position;
-                        AppStorage.update(app_id, data, function(){});
-                        position++;
+                    var old_position = 0, new_position = 0;
+                    //Update positions in new column
+                    $(currentColumn).find(".job").each(function () {
+                        var app_id = $(this).attr("app_id");
+                        AppStorage.get(app_id, function (data) {
+                            data['app-' + app_id].position = old_position;
+                            AppStorage.update(app_id, data, function () {});
+                            old_position++;
+                        });
                     });
+
+                    //Update positions in old column
+                    if (old_type != data['app-' + app_id].type) {
+                        $(".column[col_type=" + old_type + "]").find(".job").each(function () {
+                            var app_id = $(this).attr("app_id");
+                            AppStorage.get(app_id, function (data) {
+                                data['app-' + app_id].position = new_position;
+                                AppStorage.update(app_id, data, function () {});
+                                new_position++;
+                            });
+                        });
+                    }
+
+                    $(".job-placeholder").remove();
+
+                    $(DragHandler.el).removeClass("job-moved");
+                    DragHandler.el = null;
                 });
-
-                //Update positions in old column
-                position = 0;
-                $(".column[col_type="+old_type+"]").find(".job").each(function() {
-                    var app_id = $(this).attr("app_id");
-                    AppStorage.get(app_id, function(data) {
-                        data['app-' + app_id].position = position;
-                        AppStorage.update(app_id, data, function(){});
-                        position++;
-                    });
-                });
-
-                $(DragHandler.el).css({
-                    position: '',
-                    top: '',
-                    left: '',
-                    zIndex: 0
-                })
-
-                $(".job-placeholder").remove();
-
-                $(DragHandler.el).removeClass("job-moved");
-                DragHandler.el = null;
             });
         },
 
@@ -227,17 +231,12 @@ $(document).ready(function(){
         }
     }
 
-
     $(document).mousedown( DragHandler.mouseDown )
-
-    document.buttons = {
-        addApp: Dialog($("#add-app"), $(".joblist-appliedto .icon-plus-sign")),
-        credits: Dialog($("#credits"), $(".credits"), manifest),
-        trashCan: Dialog($("#rejected-can"), $(".column .rejected-can"))
-    }
 })
 
 window.addEventListener('storageLoaded', function() {
+    var manifest = chrome.runtime.getManifest();
+
     AppStorage.getAll(function(data){
         var appBlock, trashCanCount = 0;
         var apps = {};
@@ -275,7 +274,13 @@ window.addEventListener('storageLoaded', function() {
                 var application = data[app];
 
                 appBlock = Ashe.parse($("#columned-app").html(), application);
-                $(appBlock).find("img").attr('src', application.company_image);
+                /*if(application.notes && application.notes.length > 0) {
+                    console.log(application.notes);
+                    $(appBlock).find("div").addClass("noted");
+                    console.log(appBlock);
+                }
+
+                $(appBlock).find("img").attr('src', application.company_image);*/
 
                 switch(application.type) {
                     case AppTypes.applied_to: {
@@ -298,7 +303,15 @@ window.addEventListener('storageLoaded', function() {
                         trashCanCount++;
                     }
                 }
+
             }
+        }
+
+        document.buttons = {
+            addApp: Dialog($("#add-app"), $(".joblist-appliedto .icon-plus-sign")),
+            credits: Dialog($("#credits"), $(".credits"), manifest),
+            trashCan: Dialog($("#rejected-can"), $(".column .rejected-can")),
+            addNotes: Dialog($("#add-note"), $(".notes-corner"))
         }
 
         $(".rejected-can-total .total-items").html(trashCanCount);
