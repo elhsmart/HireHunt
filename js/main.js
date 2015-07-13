@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    var manifest = manifest = chrome.runtime.getManifest();
+    var manifest = chrome.runtime.getManifest();
 
     var DragHandler = {
 
@@ -109,6 +109,36 @@ $(document).ready(function(){
 window.addEventListener('storageLoaded', function() {
     AppStorage.getAll(function(data){
         var appBlock, trashCanCount = 0;
+        var apps = {};
+        var nData = {};
+
+
+        //Dumb start sorting, uhhh...
+        for (var app in data) {
+            if (data.hasOwnProperty(app)) {
+                if(typeof apps[data[app].type] == "undefined") {
+                    apps[data[app].type] = [];
+                }
+                apps[data[app].type].push(data[app]);
+            }
+        }
+
+        for(var type in apps) {
+            if (data.hasOwnProperty(app)) {
+                apps[type].sort(function(a, b) {
+                    return parseInt(a.position) - parseFloat(b.position);
+                });
+
+                for(var key in apps[type]) {
+                    if (data.hasOwnProperty(app)) {
+                        nData['app-' + apps[type][key].id] = apps[type][key];
+                    }
+                }
+            }
+        }
+
+        data = nData;
+
         for (var app in data) {
             if (data.hasOwnProperty(app)) {
                 var application = data[app];
