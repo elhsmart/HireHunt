@@ -8,7 +8,69 @@ $(document).ready(function(){
             x: 0,
             y: 0
         },
+
+        moveThrottler: 0,
+
         el: null,
+
+        getCurrentColumn: function(e) {
+            var currentColumn = null;
+
+            $(".column").each(function(){
+                if(currentColumn != null) {
+                    return;
+                }
+                // Trash can is not usual column, so this need to be adjusted a little.
+                pos = {
+                    x: $(this).position().left,
+                    y: $(this).position().top
+                };
+
+                if(pos.x == 0 && $(this).parent().hasClass("column")) {
+                    pos.x = $(this).parent().position().left;
+                }
+
+                if( e.clientX > pos.x &&
+                    e.clientX < pos.x + $(this).width() &&
+                    e.clientY > pos.y &&
+                    e.clientY < pos.y + $(this).height()
+                ) {
+                    currentColumn = this;
+                }
+            });
+
+            return currentColumn;
+        },
+
+        getCurrentBlock: function(column, e) {
+            var currentBlock = null;
+
+            $(column).find(".job").each(function(){
+                if(currentBlock != null) {
+                    return;
+                }
+
+                if($(this).hasClass("job-moved")) {
+                    return;
+                }
+
+                pos = {
+                    x: $(this).position().left,
+                    y: $(this).position().top
+                };
+
+                pos.x = pos.x + $(column).position().left;
+                if( e.clientX > pos.x &&
+                    e.clientX < pos.x + $(this).width() &&
+                    e.clientY > pos.y &&
+                    e.clientY < pos.y + $(this).height()
+                ) {
+                    currentBlock = this;
+                }
+            });
+
+            return currentBlock;
+        },
 
         mouseDown: function(e) {
             DragHandler.el = document.elementFromPoint(e.clientX, e.clientY);
@@ -28,36 +90,24 @@ $(document).ready(function(){
             DragHandler.pos.x = e.clientX - $(DragHandler.el).position().left;
             DragHandler.pos.y = e.clientY - $(DragHandler.el).position().top;
 
+            $(DragHandler.el).after("<div class='job-placeholder'></div>");
+            $(DragHandler.el).addClass("job-moved");
+            $(DragHandler.el).css({
+                position: 'absolute',
+                zIndex: 10,
+                left: e.clientX - DragHandler.pos.x,
+                top: e.clientY - DragHandler.pos.y
+            });
+
             $(document).mousemove( DragHandler.mouseMove );
             $(document).mouseup( DragHandler.mouseUp );
         },
 
         mouseUp: function(e) {
-            var currentColumn = null;
+            var currentColumn = DragHandler.getCurrentColumn(e);
 
             $(document).unbind("mousemove");
             $(document).unbind("mouseup");
-
-            $(".column").each(function(){
-
-                // Trash can is not usual column, so this need to be adjusted a little.
-                pos = {
-                    x: $(this).position().left,
-                    y: $(this).position().top
-                };
-
-                if(pos.x == 0 && $(this).parent().hasClass("column")) {
-                    pos.x = $(this).parent().position().left;
-                }
-
-                if( e.clientX > pos.x &&
-                    e.clientX < pos.x + $(this).width() &&
-                    e.clientY > pos.y &&
-                    e.clientY < pos.y + $(this).height()
-                ) {
-                    currentColumn = this;
-                }
-            });
 
             $(currentColumn).find(".joblist-inner").append(DragHandler.el);
 
@@ -83,16 +133,74 @@ $(document).ready(function(){
                 zIndex: 0
             })
 
+            $(".job-placeholder").remove();
+
+            $(DragHandler.el).removeClass("job-moved");
             DragHandler.el = null;
         },
 
         mouseMove: function(e) {
+            var block;
             $(DragHandler.el).css({
                 position: 'absolute',
                 zIndex: 10,
                 left: e.clientX - DragHandler.pos.x,
                 top: e.clientY - DragHandler.pos.y
             });
+
+            //Creepy, yeah. But my laptop helicopting with all this stuff
+            //FIXME optimize this shit! Please!
+            if(DragHandler.moveThrottler < 3) {
+                DragHandler.moveThrottler++;
+                return;
+            } else {
+                DragHandler.moveThrottler = 0;
+            }
+
+            var column = DragHandler.getCurrentColumn(e);
+
+            if($(column).find(".job").length == 0) {
+                if($(column).find(".job-placeholder").length == 0) {
+                    $(".job-placeholder").remove();
+                    if(!$(column).hasClass("rejected-can")) {
+                        $(column).find(".joblist-inner").append("<div class='job-placeholder'></div>");
+                    }
+                }
+            } else {
+                block = DragHandler.getCurrentBlock(column, e);
+                if(!block) {
+                    if($(column).find(".job-placeholder").length == 0) {
+                        $(".job-placeholder").remove();
+                        $(column).find(".joblist-inner").append("<div class='job-placeholder'></div>");
+                    }
+                    return;
+                }
+
+                pos = {
+                    x: $(block).position().left,
+                    y: $(block).position().top
+                };
+
+                pos.x = pos.x + $(column).position().left;
+                if( e.clientX > pos.x &&
+                    e.clientX < pos.x + $(block).width()) {
+
+                    if(e.clientY > pos.y && e.clientY < pos.y + $(block).height()/2) {
+                        $(".job-placeholder").remove();
+                        $(block).before("<div class='job-placeholder'></div>");
+                    }
+
+                    if(e.clientY > pos.y + $(block).height()/2 && e.clientY < pos.y + $(block).height()) {
+                        $(".job-placeholder").remove();
+                        $(block).after("<div class='job-placeholder'></div>");
+                    }
+
+                    if(e.clientY > pos.y + $(block).height()) {
+                        $(".job-placeholder").remove();
+                        $(this).after("<div class='job-placeholder'></div>");
+                    }
+                }
+            }
         }
     }
 
